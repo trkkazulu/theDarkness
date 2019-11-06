@@ -1,3 +1,10 @@
+; This is a wobble maker based on the Csound Filters Wobble patch. 
+; The large knob fades up a detuned third oscilator. 
+
+
+
+
+
 <Cabbage>
 form caption("The Darkness") size(400, 400), colour(20, 20, 20), pluginid("CsFW")
 keyboard bounds(12, 84, 381, 95), value(20)
@@ -97,12 +104,13 @@ endop
 
 opcode Wave, a, k
 kcps    xin
-
+imode = 6
 kplsLev chnget "plsLevel" ; level for the pulse wave
 
 asqr    vco2 1, kcps * 0.495, 10      ; square
 asaw    vco2 1, kcps * 1.005, 0       ; wave
-apls    vco2 kplsLev, kcps * 1.815, 6 ; square/PWM
+apls    vco2 kplsLev, kcps * 1.815, imode ; square/PWM
+
         xout    0.5 * (asqr + asaw + apls)
 endop
 
