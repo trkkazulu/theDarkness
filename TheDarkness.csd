@@ -1,8 +1,9 @@
 <Cabbage>
-form caption("Csound Filters") size(400, 220), colour(20, 20, 20), pluginid("CsFW")
+form caption("The Darkness") size(400, 400), colour(20, 20, 20), pluginid("CsFW")
 keyboard bounds(12, 84, 381, 95), value(20)
 combobox bounds(12, 8, 381, 30), align("centre"), channel("filerTypeCombo"), items("MOOG_LADDER", "MOOG_VCF   ", "LPF18      ", "BQREZ      ", "CLFILT     ", "BUTTERLP   ", "LOWRES     ", "REZZY      ", "SVFILTER   ", "VLOWRES    ", "STATEVAR   ", "MVCLPF1    ", "MVCLPF2    ", "MVCLPF3    ")
-hslider bounds(12, 40, 361, 39), channel("coeffSlider"), range(0.01, 2, .5), text("LFO Rate")
+hslider bounds(12, 40, 361, 39), channel("coeffSlider"), range(0.01, 5, 1.0, .5), text("LFO Rate")
+rslider bounds(108, 204, 186, 177), channel("plsLevel"), range(0, 0.5, 0, 1, 0.001), text("Anxiety")
 </Cabbage>
 <CsoundSynthesizer>
 <CsOptions>
@@ -16,6 +17,8 @@ nchnls = 2
 
 gaOut init 0
 giSpb   init 0.45
+
+
 
 
 ; Filter types
@@ -95,9 +98,11 @@ endop
 opcode Wave, a, k
 kcps    xin
 
+kplsLev chnget "plsLevel" ; level for the pulse wave
+
 asqr    vco2 1, kcps * 0.495, 10      ; square
 asaw    vco2 1, kcps * 1.005, 0       ; wave
-apls    vco2 6, kcps * 1.515, 0   
+apls    vco2 kplsLev, kcps * 1.815, 6 ; square/PWM
         xout    0.5 * (asqr + asaw + apls)
 endop
 
@@ -134,6 +139,7 @@ instr 1
     iCoeff      chnget "coeffSlider"
     iCps        = p4    
     iFilterType chnget "filerTypeCombo"
+    
     
     aWave   Wave iCps
     aOut    Filter aWave, iFilterType, iCoeff, iCps       
